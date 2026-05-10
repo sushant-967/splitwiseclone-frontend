@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply box-border;
+}
+
+body {
+  @apply bg-gray-50 m-0 p-0;
+}
+
+html, body, #root {
+  @apply h-full w-full;
+}
+
+.glass-effect {
+  @apply backdrop-blur-sm bg-white/80;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:scale-105;
+}
