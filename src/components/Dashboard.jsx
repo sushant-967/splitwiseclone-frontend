@@ -59,6 +59,28 @@ export default function Dashboard({ users, expenses, splits, selectedUser, trans
     return sorted.length > 0 && sorted[0][1] < 0 ? sorted[0] : null
   }
 
+  // Quick Stats Helpers
+  const getMostActiveMember = () => {
+    if (expenses.length === 0) return null
+    const expensesByUser = {}
+    expenses.forEach(exp => {
+      expensesByUser[exp.paid_by] = (expensesByUser[exp.paid_by] || 0) + 1
+    })
+    const sorted = Object.entries(expensesByUser).sort((a, b) => b[1] - a[1])
+    return sorted.length > 0 ? { userId: sorted[0][0], count: sorted[0][1] } : null
+  }
+
+  const getHighestExpense = () => {
+    if (expenses.length === 0) return null
+    return expenses.reduce((max, exp) => 
+      exp.total_amount > max.total_amount ? exp : max
+    )
+  }
+
+  const getSettlementCount = () => {
+    return new Set(splits.map(s => s.expense_id)).size
+  }
+
   return (
     <div className="space-y-8">
 
@@ -202,60 +224,73 @@ export default function Dashboard({ users, expenses, splits, selectedUser, trans
           }
         </div>
 
-        {/* Settlement Status */}
+        {/* Quick Stats */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
 
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Settlement Status
+            Quick Stats
           </h2>
 
           <div className="space-y-4">
 
+            {/* Most Active Member */}
             {
-              getTopDebtor() && (
-                <div className="p-4 bg-red-50 rounded-lg border-2 border-red-200">
+              getMostActiveMember() && (
+                <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
 
                   <p className="text-sm text-gray-600 mb-2">
-                    Biggest Debtor
+                    🌟 Most Active Member
                   </p>
 
-                  <p className="text-xl font-bold text-red-600">
-                    {getUserName(getTopDebtor()[0])}
-                    {' '}owes{' '}
-                    {formatCurrency(getTopDebtor()[1])}
+                  <p className="text-xl font-bold text-blue-600">
+                    {getUserName(getMostActiveMember().userId)}
+                  </p>
+
+                  <p className="text-sm text-gray-500 mt-1">
+                    Created {getMostActiveMember().count} expense{getMostActiveMember().count !== 1 ? 's' : ''}
                   </p>
 
                 </div>
               )
             }
 
+            {/* Highest Single Expense */}
             {
-              getTopCreditor() && (
-                <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200">
+              getHighestExpense() && (
+                <div className="p-4 bg-purple-50 rounded-lg border-2 border-purple-200">
 
                   <p className="text-sm text-gray-600 mb-2">
-                    Biggest Creditor
+                    💰 Highest Single Expense
                   </p>
 
-                  <p className="text-xl font-bold text-green-600">
-                    {getUserName(getTopCreditor()[0])}
-                    {' '}gets{' '}
-                    {formatCurrency(Math.abs(getTopCreditor()[1]))}
+                  <p className="text-xl font-bold text-purple-600">
+                    {getHighestExpense().title}
+                  </p>
+
+                  <p className="text-sm text-gray-500 mt-1">
+                    {formatCurrency(getHighestExpense().total_amount)} • By {getUserName(getHighestExpense().paid_by)}
                   </p>
 
                 </div>
               )
             }
 
-            {
-              !getTopDebtor() && !getTopCreditor() && (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    All balances settled ✓
-                  </p>
-                </div>
-              )
-            }
+            {/* Number of Settlements */}
+            <div className="p-4 bg-orange-50 rounded-lg border-2 border-orange-200">
+
+              <p className="text-sm text-gray-600 mb-2">
+                ✓ Number of Settlements
+              </p>
+
+              <p className="text-xl font-bold text-orange-600">
+                {getSettlementCount()} transaction{getSettlementCount() !== 1 ? 's' : ''}
+              </p>
+
+              <p className="text-sm text-gray-500 mt-1">
+                Expense records created
+              </p>
+
+            </div>
 
           </div>
         </div>
