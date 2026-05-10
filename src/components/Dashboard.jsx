@@ -1,4 +1,4 @@
-import { Users, IndianRupee, TrendingUp, Clock } from 'lucide-react'
+import { Users, IndianRupee, TrendingUp, Clock, Calendar } from 'lucide-react'
 
 export default function Dashboard({ users, expenses, splits, selectedUser, transactions }) {
 
@@ -9,6 +9,15 @@ export default function Dashboard({ users, expenses, splits, selectedUser, trans
   // Currency formatter
   const formatCurrency = (amount) => {
     return `₹${Number(amount).toFixed(2)}`
+  }
+
+  // Date formatter
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
   }
 
   // Calculate user balances
@@ -166,8 +175,9 @@ export default function Dashboard({ users, expenses, splits, selectedUser, trans
                           {expense.title}
                         </p>
 
-                        <p className="text-sm text-gray-600">
-                          by {getUserName(expense.paid_by)}
+                        <p className="text-sm text-gray-600 flex items-center gap-1">
+                          <Calendar size={12} />
+                          {formatDate(expense.created_at)} • by {getUserName(expense.paid_by)}
                         </p>
                       </div>
 

@@ -2,7 +2,8 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   TrendingUp,
-  IndianRupee
+  IndianRupee,
+  Calendar
 } from 'lucide-react'
 
 export default function ExpenseSplits({
@@ -18,6 +19,15 @@ export default function ExpenseSplits({
 
   const getExpenseName = (expenseId) => {
     return expenses.find(e => e.id === expenseId)?.title || 'Unknown'
+  }
+
+  const getExpenseDate = (expenseId) => {
+    const expense = expenses.find(e => e.id === expenseId)
+    return expense ? new Date(expense.created_at).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }) : 'Unknown'
   }
 
   // Currency formatter
@@ -320,15 +330,13 @@ export default function ExpenseSplits({
                       {getExpenseName(split.expense_id)}
                     </h3>
 
-                    <p className="text-sm text-gray-600 mt-1">
-
-                      Split for
-
+                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+                      <Calendar size={14} />
+                      {getExpenseDate(split.expense_id)}
+                      • Split for
                       <span className="font-semibold">
-                        {' '}
                         {getUserName(split.user_id)}
                       </span>
-
                     </p>
 
                   </div>
