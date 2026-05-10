@@ -7,7 +7,23 @@ import ExpenseList from './components/ExpenseList'
 import ExpenseSplits from './components/ExpenseSplits'
 import Dashboard from './components/Dashboard'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+// Determine API URL based on environment
+const getAPIUrl = () => {
+  // Check if VITE_API_URL is set during build
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL
+  }
+  
+  // If running on localhost, use localhost backend
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:8000'
+  }
+  
+  // Production: use Render backend
+  return 'https://splitwiseclone-dzbw.onrender.com'
+}
+
+const API_URL = getAPIUrl()
 
 export default function App() {
   const [currentView, setCurrentView] = useState('dashboard')
