@@ -1,7 +1,6 @@
 import {
   ArrowUpRight,
   ArrowDownLeft,
-  TrendingUp,
   IndianRupee,
   Calendar
 } from 'lucide-react'
@@ -59,46 +58,6 @@ export default function ExpenseSplits({
       (userBalances[split.user_id] || 0) + balance
   })
 
-  const getSettlements = () => {
-
-    const balances = { ...userBalances }
-
-    const settlements = []
-
-    const debtors = Object.entries(balances)
-      .filter(([_, amount]) => amount > 0)
-      .sort((a, b) => b[1] - a[1])
-
-    const creditors = Object.entries(balances)
-      .filter(([_, amount]) => amount < 0)
-      .sort((a, b) => a[1] - b[1])
-
-    debtors.forEach(([debtor, debtAmount]) => {
-
-      creditors.forEach(([creditor, creditAmount]) => {
-
-        if (debtAmount > 0 && creditAmount < 0) {
-
-          const amount = Math.min(
-            debtAmount,
-            Math.abs(creditAmount)
-          )
-
-          settlements.push({
-            from: debtor,
-            to: creditor,
-            amount
-          })
-
-          balances[debtor] -= amount
-          balances[creditor] += amount
-        }
-      })
-    })
-
-    return settlements
-  }
-
   if (displaySplits.length === 0) {
 
     return (
@@ -125,94 +84,6 @@ export default function ExpenseSplits({
   return (
 
     <div className="space-y-8">
-
-      {/* Settlement Summary */}
-      {
-        settlements.length > 0 && (
-
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-xl p-8 border-2 border-green-200">
-
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-
-              <TrendingUp
-                className="text-green-600"
-                size={28}
-              />
-
-              Settlement Summary
-
-            </h2>
-
-            <div className="space-y-3">
-
-              {
-                settlements.map((settlement, idx) => (
-
-                  <div
-                    key={idx}
-                    className="bg-white rounded-xl p-4 flex items-center justify-between"
-                  >
-
-                    <div className="flex items-center gap-3 flex-1">
-
-                      <div className="text-2xl">
-                        {getUserName(settlement.from).charAt(0)}
-                      </div>
-
-                      <div>
-
-                        <p className="font-bold text-gray-900">
-                          {getUserName(settlement.from)}
-                        </p>
-
-                        <p className="text-sm text-gray-500">
-                          owes
-                        </p>
-
-                      </div>
-                    </div>
-
-                    <div className="text-center mx-4">
-
-                      <p className="text-lg font-bold text-green-600 flex items-center gap-1 justify-center">
-
-                        <IndianRupee size={18} />
-
-                        {settlement.amount.toFixed(2)}
-
-                      </p>
-
-                    </div>
-
-                    <div className="flex items-center gap-3 flex-1 justify-end">
-
-                      <div className="text-right">
-
-                        <p className="font-bold text-gray-900">
-                          {getUserName(settlement.to)}
-                        </p>
-
-                        <p className="text-sm text-gray-500">
-                          to receive
-                        </p>
-
-                      </div>
-
-                      <div className="text-2xl">
-                        {getUserName(settlement.to).charAt(0)}
-                      </div>
-
-                    </div>
-
-                  </div>
-                ))
-              }
-
-            </div>
-
-          </div>
-        )
-      }
 
       {/* User Balances */}
       <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
