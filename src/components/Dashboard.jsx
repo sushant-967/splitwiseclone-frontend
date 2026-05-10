@@ -45,20 +45,6 @@ export default function Dashboard({ users, expenses, splits, selectedUser, trans
     return users.find(u => u.id === userId)?.username || 'Unknown'
   }
 
-  const getTopDebtor = () => {
-    const sorted = Object.entries(userBalances)
-      .filter(([userId]) => users.find(u => u.id === parseInt(userId)))
-      .sort((a, b) => b[1] - a[1])
-    return sorted.length > 0 && sorted[0][1] > 0 ? sorted[0] : null
-  }
-
-  const getTopCreditor = () => {
-    const sorted = Object.entries(userBalances)
-      .filter(([userId]) => users.find(u => u.id === parseInt(userId)))
-      .sort((a, b) => a[1] - b[1])
-    return sorted.length > 0 && sorted[0][1] < 0 ? sorted[0] : null
-  }
-
   // Quick Stats Helpers
   const getMostActiveMember = () => {
     if (expenses.length === 0) return null
