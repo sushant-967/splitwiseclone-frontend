@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Plus, IndianRupee } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Plus, IndianRupee, Check } from 'lucide-react'
 
 export default function ExpenseForm({ users, onAddExpense, loading }) {
 
@@ -10,6 +10,8 @@ export default function ExpenseForm({ users, onAddExpense, loading }) {
     participants: [],
     comments: ''
   })
+
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -49,6 +51,10 @@ export default function ExpenseForm({ users, onAddExpense, loading }) {
         participants: formData.participants
       })
 
+      // Show success animation
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 2000)
+
       setFormData({
         title: '',
         amount: '',
@@ -69,15 +75,31 @@ export default function ExpenseForm({ users, onAddExpense, loading }) {
 
     <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 sticky top-20">
 
+      {/* Success Animation */}
+      {
+        showSuccess && (
+          <div className="absolute inset-0 rounded-2xl flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-600 z-50 animate-pulse">
+            <div className="text-center">
+              <div className="mb-4 animate-bounce">
+                <Check className="text-white" size={64} />
+              </div>
+              <p className="text-white text-2xl font-bold">
+                Expense Added! 🎉
+              </p>
+              <p className="text-green-100 mt-2">
+                Great job splitting!
+              </p>
+            </div>
+          </div>
+        )
+      }
+
       <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
         <Plus className="text-indigo-600" size={28} />
         Add Expense
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
-        {/* Title */}
-        <div>
 
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Expense Title
